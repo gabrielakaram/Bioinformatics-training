@@ -1,0 +1,31 @@
+#FINDING A MOTIF IN DNA
+
+# eg.
+# s='GATATATGCATATACTT'
+# t='ATAT'
+
+with open('./rosalind.txt', 'r') as file:
+    s = file.readline().strip()  # full string as first line
+    t = file.readline().strip()	 # substring as second line
+
+motifs_loc = [] #track i where motifs (substring) start
+for i in range(1,len(s)+1):
+	if s[i-1:i+n-1] == t #== for comparison
+		motifs_loc.append(i)
+	else
+		continue
+
+#Using built-in Python tools
+
+with open('./rosalind.txt', 'r') as file:
+    s = file.readline().strip()  # full string as first line
+    t = file.readline().strip()	 # substring as second line
+
+motifs_loc = []
+motif = s.find(t)
+
+while motif != -1: #while the output of motif is not -1 (no strings found anymore)
+	motifs_loc.append(motif+1)
+	motif = s.find(t, motif+1)
+
+print(*motifs_loc)

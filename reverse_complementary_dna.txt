@@ -1,0 +1,9 @@
+#REVERSE COMPLEMENTARY DNA
+
+with open('./rosalind_revc.txt', 'r') as file:
+	s_DNA = file.read()  
+
+def rev_comp(s_DNA):
+	dna_comp = s_DNA.replace("A", "X").replace("T","A").replace("X","T").replace("C","Y").replace("G","C").replace("Y","G")
+	reversed_DNA = dna_comp[::-1]
+	print(reversed_DNA)

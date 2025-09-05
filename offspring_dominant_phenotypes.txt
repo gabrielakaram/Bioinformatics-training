@@ -1,0 +1,14 @@
+#OFFSPRING DOMINANT PHENOTYPES
+
+with open('./rosalind_revc.txt', 'r') as file:
+	s = file.read()  
+
+integers= [int(x) for x in s.split()]
+
+offspring_dom = [2, 2, 2, 1.5, 1, 0]
+
+sum = 0
+for i in range(len(s.split())):
+	sum += offspring_dom[i] * integers [i]
+
+print(sum)

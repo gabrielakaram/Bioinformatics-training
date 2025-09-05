@@ -1,0 +1,21 @@
+# COUNTING POINT MUTATIONS
+# Common to both options
+
+with open('./rosalind.txt', 'r') as file:
+    s1 = file.readline().strip() 	# first sequence
+    s2 = file.readline().strip()	# second sequence
+
+# option 1
+
+ham_dist = 0
+for i in range(len(s1)):
+	if s1[i] != s2[i]:
+		ham_dist += 1
+
+print(ham_dist)
+		
+# other option
+# Considering the logic of a generator expression: (expression for item in iterable if condition)
+
+ham_dist = sum(1 for a,b in zip(s1,s2) if a != b)
+print(ham_dist)
