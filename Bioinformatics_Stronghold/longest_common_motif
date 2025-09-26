@@ -1,0 +1,34 @@
+with open(r'C:\Users\Gabriela Karam\Downloads\rosalind_lcsm.txt', 'r') as arquive:
+    fasta_string = arquive.read()
+
+def parse_fasta(fasta_string):
+    sequences = {}
+    seq_id = None #no value yet, could be '' but this is clearer
+    for line in fasta_string.strip().splitlines(): #strip() removes whitespace from the edges of the string, splitlines() splits the strings into lines (iterable)
+        if line.startswith(">"): 
+            seq_id = line[1:].strip() #[1:] removes the ">", using strip() in case there was any whitespace between ">" and the rest of the string
+            sequences[seq_id] = "" #will be filled in the next iterations
+        else:
+            sequences[seq_id] += line.strip()  #adds each sequence line directly next to the previous one
+    return sequences
+
+sequences = parse_fasta(fasta_string)
+
+motif=''#blank string that will be used to compare sizes, only candidate motifs generated in the code that are larger will replace this string
+first_sequence = list(sequences.values())[0] #transforms the dictionary's values in a list. as we need the motif to be in all sequences, we can use any sequence as reference. value() as a method for dicts
+n=len(first_sequence) #maximum sequence size: the size of the sequence itself
+
+motifs_longos_comuns = []
+for size in range(n, 0, -1):  # all possible sizes, from the entire string to just one nucleotide
+    for beg in range(0, n - size + 1):  #based on the fact that if i=7, k can only be 0. if i=6, k can be 0 or 1; and so on
+        motif_candidate = first_sequence[beg:beg+size] #this works because the splicer works in the same logic as range
+        all = True #assume the motif is in all sequences until proven otherwise, easier than checking if it is present in each sequence
+        for seq in sequences.values():
+            if motif_candidate not in seq:
+                all = False		
+                break
+        if all and len(motif) <= len(motif_candidate):
+            motifs_longos_comuns.append(motif_candidate)
+            motif = motif_candidate
+
+print(f"Longest common motif: '{motif}'")
