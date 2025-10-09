@@ -1,0 +1,38 @@
+#Prompt
+#Given: Two positive integers k (k≤7) and N (N≤2k). In this problem, we begin with Tom, who in the 0th generation has genotype AaBb. Tom has two children in the 1st generation, each of whom has two children, and so on. Each organism always mates with an organism having genotype AaBb.
+#Return: The probability that at least N AaBb organisms will belong to the k-th generation of Tom's family tree (don't count the AaBb mates at each level). Assume that Mendel's second law holds for the factors.
+
+#considering any crossing with a AaBb parental results in a 0.25 probability of the offspring being AaBb, we can solve this problem using the binomial distribution
+
+#n is the number of organisms at the k-th generation
+n= 2**k
+#x is the number of organisms we want to have with AaBb genotype at the k-th generation
+x=
+#p is the probability that offspring is AaBb
+p= 0.25
+
+#coding the binomial distribution
+
+def binomial(n,x,p):
+	numerator = (p**x)*((1-p)**(n-x)) #probability aspect of the formula
+	denominator = 1
+	for i in range(1,n+1):
+		numerator *= i #n factorial
+	for i in range(1,n-x+1):
+		denominator *= i #n-x factorial
+	for i in range(1,x+1):
+		denominator *= i #x factorial
+	return numerator/denominator
+	
+probability_sum = 0
+for i in range(x,n+ 1):
+	probability_sum += binomial(n,i,p)
+
+probability_sum
+
+#using math
+
+import math
+
+def binomial(n, x, p):
+    return  math.comb(n, x) * (p**x) * ((1-p)**(n-x))
