@@ -1,0 +1,30 @@
+from collections import defaultdict
+
+with open(r'protein_sequences', 'r') as arquive:
+    fasta_string = arquive.read()
+
+def parse_fasta(fasta_string):
+    sequences = {}
+    seq_id = None #no value yet, could be '' but this is clearer
+    for line in fasta_string.strip().splitlines(): #strip() removes whitespace from the edges of the string, splitlines() splits the strings into lines (iterable)
+        if line.startswith(">"): 
+            seq_id = line[1:].strip() #[1:] removes the ">", using strip() in case there was any whitespace between ">" and the rest of the string
+            sequences[seq_id] = "" #will be filled in the next iterations
+        else:
+            sequences[seq_id] += line.strip()  #adds each sequence line directly next to the previous one
+    return sequences
+
+sequences = parse_fasta(fasta_string)
+
+found=defaultdict(list) #so that we can add more than one position for each id
+
+for id, seq in sequences.items():
+    i=seq.find('ST')
+    while i != -1:
+        if i in range(1,len(seq)-2) and seq[i-1] != 'P' and seq[i+2] != 'P': 
+            found[id].append(i)
+        i=seq.find('ST',i+1)
+
+for id, positions in found.items():
+    print(id)
+    print([p+1 for p in positions]) #convert to 1-based indexing
