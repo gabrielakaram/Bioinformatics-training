@@ -1,0 +1,13 @@
+# RNA Codon Table
+rna_table = {'F':['UUU','UUC'],'L':['UUG','UUA','CUU','CUC','CUA','CUG'],'S':['UCU','UCC','UCA','UCG','AGU','AGC'],'I':['AUU','AUC','AUA'],'V':['GUU','GUC','GUA','GUG'],'P':['CCU','CCC','CCA','CCG'],'M':['AUG'],'T':['ACU','ACC','ACA','ACG'],'A':['GCU','GCC','GCA','GCG'],'Y':['UAU','UAC'],'H':['CAU','CAC'],'N':['AAU','AAC'],'D':['GAU','GAC'],'Q':['CAA','CAG'],'K':['AAA','AAG'],'E':[ 'GAA','GAG'],'C':['UGU','UGC'],'R':['CGU','CGC','CGA','CGG','AGA','AGG'],'G':['GGU','GGC','GGA','GGG'],'W':['UGG']}
+mod= #integer value
+protein= #desired protein to infer number of possible mRNA
+
+def possible_rnas(rna_table,protein,mod): #gives the total number of different RNA strings from which the protein could have been translated, modulo 1,000,000.
+    multiplication=3 #considering 3 options of stop codon: UAA, UAG and UGA
+    for aa in protein:
+        if aa in rna_table:
+            multiplication = (multiplication * len(rna_table[aa])) % mod
+        else:
+            print(f"Amino acid {aa} not in RNA table!")
+    return multiplication%mod
