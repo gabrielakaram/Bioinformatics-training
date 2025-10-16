@@ -1,0 +1,60 @@
+with open(r'rosalind_orf.txt', 'r') as arquive:
+    fasta_string = arquive.read()
+
+def parse_fasta(fasta_string):
+    sequences = {}
+    seq_id = None #no value yet, could be '' but this is clearer
+    for line in fasta_string.strip().splitlines(): #strip() removes whitespace from the edges of the string, splitlines() splits the strings into lines (iterable)
+        if line.startswith(">"): 
+            seq_id = line[1:].strip() #[1:] removes the ">", using strip() in case there was any whitespace between ">" and the rest of the string
+            sequences[seq_id] = "" #will be filled in the next iterations
+        else:
+            sequences[seq_id] += line.strip()  #adds each sequence line directly next to the previous one
+    return sequences
+
+s_DNA = list(parse_fasta(fasta_string).values())[0] #arquive has only one DNA string
+
+def rev_comp(s_DNA):
+	dna_comp = s_DNA.replace("A", "X").replace("T","A").replace("X","T").replace("C","Y").replace("G","C").replace("Y","G")
+	reversed_DNA = dna_comp[::-1]
+	return(reversed_DNA)
+
+reversed_DNA=rev_comp(s_DNA)
+
+sequences=[s_DNA,reversed_DNA]
+
+def encontrar_orfs(sequences):
+    orfs = [] #store all possible orfs from both s_DNA and reversed_DNA
+    stop_codons = {"TAA", "TAG", "TGA"}
+    
+    for sequence in sequences: 
+        for frame in range(3):  # for each of the 3 reading frames
+            i = frame
+            while i < len(sequence) - 2:
+                codon = sequence[i:i+3] #tests 1 of the 3 possible codons from each frame 
+                if codon == "ATG": #continues to look for a stop sequence
+                    for j in range(i + 3, len(sequence) - 2, 3): #starts looking for a stop codon
+                        stop = sequence[j:j+3] 
+                        if stop in stop_codons: #finds 1 of the 3 stop codons
+                            orf = sequence[i:j] #defines orf, considering i as the index having A from ATG
+                            if orf not in orfs: #ensures there are no repetitions
+                                orfs.append(orf) #adds to list of orfs
+                            break  #stop at first valid stop codon #stops looking for other stop codons
+                    i += 3  #skip past the ATG #and starts looking again for ATGs
+                else:
+                    i += 3  #move to next codon 
+    return orfs
+
+orfs=encontrar_orfs(sequences)
+
+proteins=[]
+
+for orf in orfs:
+    protein = ""  # começa nova proteína
+    for i in range(0, len(orf) - 2, 3):
+        codon = orf[i:i+3]
+        protein += dna_table.get(codon, "")  # traduz codon
+    proteins.append(protein)  # salva proteína traduzida
+
+for p in proteins:
+    print(p)
