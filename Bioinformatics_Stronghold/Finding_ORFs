@@ -1,27 +1,16 @@
-with open(r'rosalind_orf.txt', 'r') as arquive:
-    fasta_string = arquive.read()
-
-def parse_fasta(fasta_string):
-    sequences = {}
-    seq_id = None #no value yet, could be '' but this is clearer
+def parse_fasta(fasta_string): #adapted from previous function that considered multiple entries
+    s_DNA="" #initialize empty string to store sequence
     for line in fasta_string.strip().splitlines(): #strip() removes whitespace from the edges of the string, splitlines() splits the strings into lines (iterable)
         if line.startswith(">"): 
-            seq_id = line[1:].strip() #[1:] removes the ">", using strip() in case there was any whitespace between ">" and the rest of the string
-            sequences[seq_id] = "" #will be filled in the next iterations
+            pass 
         else:
-            sequences[seq_id] += line.strip()  #adds each sequence line directly next to the previous one
-    return sequences
-
-s_DNA = list(parse_fasta(fasta_string).values())[0] #arquive has only one DNA string
+            s_DNA += line.strip()  #adds each sequence line directly next to the previous one
+    return s_DNA
 
 def rev_comp(s_DNA):
 	dna_comp = s_DNA.replace("A", "X").replace("T","A").replace("X","T").replace("C","Y").replace("G","C").replace("Y","G")
 	reversed_DNA = dna_comp[::-1]
 	return(reversed_DNA)
-
-reversed_DNA=rev_comp(s_DNA)
-
-sequences=[s_DNA,reversed_DNA]
 
 def encontrar_orfs(sequences):
     orfs = [] #store all possible orfs from both s_DNA and reversed_DNA
@@ -39,22 +28,44 @@ def encontrar_orfs(sequences):
                             orf = sequence[i:j] #defines orf, considering i as the index having A from ATG
                             if orf not in orfs: #ensures there are no repetitions
                                 orfs.append(orf) #adds to list of orfs
-                            break  #stop at first valid stop codon #stops looking for other stop codons
-                    i += 3  #skip past the ATG #and starts looking again for ATGs
+                            break  #stop at first valid stop codon 
+                    i += 3  #skip past the ATG and starts looking again for other start codons
                 else:
-                    i += 3  #move to next codon 
+                    i += 3  #move directly to next codon to look for an ATG
     return orfs
 
-orfs=encontrar_orfs(sequences)
+def from_orf_to_protein(orfs):
+    proteins=[]
+    for orf in orfs:
+        protein = ""  # começa nova proteína
+        for i in range(0, len(orf) - 2, 3):
+            codon = orf[i:i+3]
+            protein += dna_table.get(codon, "")  # traduz codon
+        proteins.append(protein)  # salva proteína traduzida
+    for p in proteins:
+        print(p)
 
-proteins=[]
+dna_table={'TTT':'F','TTC':'F','TTG':'L','TTA':'L',
+           'CTT':'L','CTC':'L','CTA':'L','CTG':'L',
+           'TCT':'S','TCC':'S','TCA':'S','TCG':'S',
+           'AGT':'S','AGC':'S','ATT':'I','ATC':'I',
+           'ATA':'I','GTT':'V','GTC':'V','GTA':'V',
+           'GTG':'V','CCT':'P','CCC':'P','CCA':'P',
+           'CCG':'P','ATG':'M','ACT':'T','ACC':'T',
+           'ACA':'T','ACG':'T','GCT':'A','GCC':'A',
+           'GCA':'A','GCG':'A','TAT':'Y','TAC':'Y',
+           'CAT':'H','CAC':'H','AAT':'N','AAC':'N',
+           'GAT':'D','GAC':'D','CAA':'Q','CAG':'Q',
+           'AAA':'K','AAG':'K','GAA':'E','GAG':'E',
+           'TGT':'C','TGC':'C','CGT':'R','CGC':'R',
+           'CGA':'R','CGG':'R','AGA':'R','AGG':'R',
+           'GGT':'G','GGC':'G','GGA':'G','GGG':'G','TGG':'W'}
 
-for orf in orfs:
-    protein = ""  # começa nova proteína
-    for i in range(0, len(orf) - 2, 3):
-        codon = orf[i:i+3]
-        protein += dna_table.get(codon, "")  # traduz codon
-    proteins.append(protein)  # salva proteína traduzida
+#running the functions
+with open(r'rosalind_orf.txt', 'r') as file:
+    fasta_string = file.read()
 
-for p in proteins:
-    print(p)
+s_DNA = parse_fasta(fasta_string)
+reversed_DNA = rev_comp(s_DNA)
+orfs = encontrar_orfs([s_DNA, reversed_DNA]) #sequences=[s_DNA, reversed_DNA]
+from_orf_to_protein(orfs)
