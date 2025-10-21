@@ -1,11 +1,6 @@
-def parse_fasta(fasta_string): #adapted from previous function that considered multiple entries
-    s_DNA="" #initialize empty string to store sequence
-    for line in fasta_string.strip().splitlines(): #strip() removes whitespace from the edges of the string, splitlines() splits the strings into lines (iterable)
-        if line.startswith(">"): 
-            pass 
-        else:
-            s_DNA += line.strip()  #adds each sequence line directly next to the previous one
-    return s_DNA
+def parse_fasta(fasta_string): #adapted from previous function that considered multiple entries, now generator version
+    return ''.join(line.strip() for line in fasta_string.splitlines() 
+                  if not line.startswith('>'))
 
 def rev_comp(s_DNA):
     dna_comp = s_DNA.replace("A", "X").replace("T","A").replace("X","T").replace("C","Y").replace("G","C").replace("Y","G")
