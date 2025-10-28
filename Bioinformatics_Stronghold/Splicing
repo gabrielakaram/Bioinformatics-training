@@ -1,0 +1,54 @@
+def parse_fasta(fasta_string): #version adapted from previous function that considered multiple entries to only return sequences in a list
+    sequences=[]
+    current_seq=''
+    for line in fasta_string.strip().splitlines(): #strip() removes whitespace from the edges of the string, splitlines() splits the strings into lines (iterable)
+        if line.startswith(">"): 
+            if current_seq:
+                sequences.append(current_seq)
+                current_seq=''
+        else:
+            current_seq += line.strip()
+    sequences.append(current_seq)  #append the last sequence after the loop ends
+    return sequences
+
+def splice(seqs):
+    for i in range(len(seqs)):
+        if i == 0:
+            s_DNA = seqs[0]
+        else:  # Começa do segundo item
+            f = s_DNA.find(seqs[i])
+            while f != -1:
+                s_DNA = s_DNA[:f] + s_DNA[f + len(seqs[i]):]
+                f = s_DNA.find(seqs[i], f + 1)
+    return s_DNA
+
+def from_DNA_to_protein(s_DNA):
+    protein=''
+    for i in range(0, len(s_DNA) - 2, 3):
+            codon = s_DNA[i:i+3]
+            protein += dna_table.get(codon, "")  # traduz codon
+    return protein
+
+dna_table={'TTT':'F','TTC':'F','TTG':'L','TTA':'L',
+           'CTT':'L','CTC':'L','CTA':'L','CTG':'L',
+           'TCT':'S','TCC':'S','TCA':'S','TCG':'S',
+           'AGT':'S','AGC':'S','ATT':'I','ATC':'I',
+           'ATA':'I','GTT':'V','GTC':'V','GTA':'V',
+           'GTG':'V','CCT':'P','CCC':'P','CCA':'P',
+           'CCG':'P','ATG':'M','ACT':'T','ACC':'T',
+           'ACA':'T','ACG':'T','GCT':'A','GCC':'A',
+           'GCA':'A','GCG':'A','TAT':'Y','TAC':'Y',
+           'CAT':'H','CAC':'H','AAT':'N','AAC':'N',
+           'GAT':'D','GAC':'D','CAA':'Q','CAG':'Q',
+           'AAA':'K','AAG':'K','GAA':'E','GAG':'E',
+           'TGT':'C','TGC':'C','CGT':'R','CGC':'R',
+           'CGA':'R','CGG':'R','AGA':'R','AGG':'R',
+           'GGT':'G','GGC':'G','GGA':'G','GGG':'G','TGG':'W'}
+
+#running
+with open(r'rosalind_splc.txt', 'r') as file:
+    fasta_string = file.read()
+
+seqs=parse_fasta(fasta_string)
+s_DNA=splice(seqs)
+from_DNA_to_protein(s_DNA)
