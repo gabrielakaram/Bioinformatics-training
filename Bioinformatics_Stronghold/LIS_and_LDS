@@ -17,6 +17,8 @@ def subseqs_recursive(i, s, n, sub, subseq):
 
     return subseq
 
+#this has O(2ⁿ) complexity... so it won't work for large n
+
 def is_sorted(subseqs):
     for sub in sorted(subseq, key=len, reverse=True):
         if all(sub[i] < sub[i+1] for i in range(len(sub)-1)): #i tried using sorted for each criteria but this looks clearer
