@@ -1,0 +1,75 @@
+with open("dados.txt", "r") as f:
+    linhas = f.readlines()
+    
+n= int(linhas[0].strip())
+s = [int(x) for x in linhas[1].split()] 
+[#1 2 3 4 5]
+
+subseq = []
+sub = []
+
+def subseqs_recursive(i, s, n, sub, subseq):
+    if i==n:
+        if sub:
+            subseq.append(sub.copy()) #subseq does not store values, it stores references.
+        return
+
+    sub.append(s[i]) #opção de incluir o elemento atual
+    subseqs_recursive(i+1,s,n,sub, subseq)
+    sub.pop() #opção de não incluir o elemento atual
+    subseqs_recursive(i+1,s,n,sub, subseq)
+
+    return subseq
+
+subseq=[]
+subseqs = subseqs_recursive(0,s,len(s),[],subseq)
+
+def is_sorted(subseqs):
+    for sub in sorted(subseq, key=len, reverse=True):
+        if all(sub[i] < sub[i+1] for i in range(len(sub)-1)): #i tried using sorted for each criteria but this looks clearer
+            if len(sub) > len(long_sub):
+                max_sub = []
+                long_sub = sub
+            if len(sub) == len(long_sub):
+                max_sub.append(long_sub)
+
+        if all(sub[i] > sub[i+1] for i in range(len(sub)-1)):
+            if len(sub)<len(small_sub):
+                min_sub =[]
+                small_sub=sub
+            if len(sub) == len(min_sub):
+                min_sub.append(small_sub)
+    return max_sub, min_sub
+
+# The following is an easier to read code
+
+def is_increasing(sub):
+    return all(sub[i] < sub[i+1] for i in range(len(sub)-1))
+
+def is_decreasing(sub):
+    return all(sub[i] > sub[i+1] for i in range(len(sub)-1))
+
+def LIS_LDS(subseqs):
+    max_inc = []
+    max_dec = []
+    max_inc_len = 0
+    max_dec_len = 0
+    for sub in subseqs:
+        if is_increasing(sub):
+            if len(sub) > max_inc_len:
+                max_inc = [sub]
+                max_inc_len = len(sub)
+            if len(sub) == max_inc_len:
+                if sub not in max_inc:
+                    max_inc.append(sub)
+
+        if is_decreasing(sub):
+            if len(sub) > max_dec_len:
+                max_dec = [sub]
+                max_dec_len = len(sub)
+            if len(sub) == max_dec_len:
+                if sub not in max_dec:
+                    max_dec.append(sub)
+    return max_inc, max_dec
+
+LIS_LDS(subseqs)
