@@ -3,10 +3,6 @@ with open("dados.txt", "r") as f:
     
 n= int(linhas[0].strip())
 s = [int(x) for x in linhas[1].split()] 
-[#1 2 3 4 5]
-
-subseq = []
-sub = []
 
 def subseqs_recursive(i, s, n, sub, subseq):
     if i==n:
@@ -20,9 +16,6 @@ def subseqs_recursive(i, s, n, sub, subseq):
     subseqs_recursive(i+1,s,n,sub, subseq)
 
     return subseq
-
-subseq=[]
-subseqs = subseqs_recursive(0,s,len(s),[],subseq)
 
 def is_sorted(subseqs):
     for sub in sorted(subseq, key=len, reverse=True):
@@ -72,4 +65,6 @@ def LIS_LDS(subseqs):
                     max_dec.append(sub)
     return max_inc, max_dec
 
+subseq=[]
+subseqs = subseqs_recursive(0,s,len(s),[],subseq)
 LIS_LDS(subseqs)
