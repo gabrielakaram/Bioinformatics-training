@@ -1,4 +1,4 @@
-with open("dados.txt", "r") as f:
+lines with open("dados.txt", "r") as f:
     linhas = f.readlines()
     
 n= int(linhas[0].strip())
@@ -17,7 +17,24 @@ def subseqs_recursive(i, s, n, sub, subseq):
 
     return subseq
 
-#this has O(2ⁿ) complexity... so it won't work for large n
+#trying to alter the recursive code using yield
+
+def subseqs_recursive2(i, s, n,sub=None):
+    if sub is None:
+        sub = []
+    if i==n:
+        if sub:
+            yield sub.copy() 
+        return
+
+    sub.append(s[i]) #opção de incluir o elemento atual
+    yield from subseqs_recursive2(i+1,s,n,sub)
+    sub.pop() #opção de não incluir o elemento atual
+    yield from subseqs_recursive2(i+1,s,n,sub)
+
+#run as
+
+subseqs = list(subseqs_recursive2(0, s, n))
 
 def is_sorted(subseqs):
     for sub in sorted(subseq, key=len, reverse=True):
@@ -68,5 +85,11 @@ def LIS_LDS(subseqs):
     return max_inc, max_dec
 
 subseq=[]
-subseqs = subseqs_recursive(0,s,len(s),[],subseq)
+subseqs = subseqs_recursive1(0,s,len(s),[],subseq)
 LIS_LDS(subseqs)
+
+or 
+
+subseqs = list(subseqs_recursive2(0, s, n))
+
+#these solutions have O(2ⁿ) complexity... so it won't work for large n
