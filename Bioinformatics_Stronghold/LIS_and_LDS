@@ -1,3 +1,69 @@
+#first find LIS lenght to afunilate the problem
+def LIS_length(s,n):
+    memo = []
+    for i in range(n):
+        memo.append(1)
+    for i in range(1,n):
+        j = 0
+        while j<i:
+            if s[j]<s[i]:
+                memo[i] = max(memo[i], memo[j]+1)
+            j+=1
+    return memo
+
+#then creat each LIS from back to front, reverse and then add to all_lis list 
+def LIS(memo,s,n):
+    all_lis = []
+    indices = [i for i in range(n) if memo[i] == max(memo)]
+    for indice in indices:
+        lis = [s[indice]]
+        i = indice
+
+        for j in range(i-1,-1,-1):
+            if s[j]<s[i] and memo[j]+1 == memo[i]:
+                lis.append(s[j])
+                i = j
+        lis.reverse()
+        all_lis.append(lis)
+    return all_lis
+
+#same for LDS, with small differences
+def LDS_length(s,n):
+    memo = []
+    for i in range(n):
+        memo.append(1)
+    for i in range(1,n):
+        j = 0
+        while j<i:
+            if s[j]>s[i]: #change from previous LIS code
+                memo[i] = max(memo[i], memo[j]+1)
+            j+=1
+    return memo
+
+def LDS(memo2,s,n):
+    all_lds = []
+    indices = [i for i in range(n) if memo2[i] == max(memo2)]
+    for indice in indices:
+        lds = [s[indice]]
+        i = indice
+
+        for j in range(i-1,-1,-1):
+            if s[j]>s[i] and memo2[j]+1 == memo2[i]: #change from previous code
+                lds.append(s[j])
+                i = j
+        lds.reverse()
+        all_lds.append(lds)
+    return all_lds
+
+#running
+
+memo = LIS_length(s,n)
+memo2 = LDS_length(s,n)
+LIS(memo,s,n)
+LDS(memo2,s,n)
+
+#bellow is trial and error until I realized I had to try another strategy 
+
 lines with open("dados.txt", "r") as f:
     linhas = f.readlines()
     
