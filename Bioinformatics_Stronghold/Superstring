@@ -14,12 +14,19 @@ with open(r'C:\Users\Gabriela Karam\Downloads\rosalind_long.txt', 'r') as arquiv
 #>Rosalind_59
 #GCCGGAATAC"""
 
-def parse_fasta(fasta_string):
-    sequences = []
+def parse_fasta(fasta_string): #version adapted from previous function that considered multiple entries to only return sequences in a list
+    sequences=[]
+    current_seq=''
     for line in fasta_string.strip().splitlines(): #strip() removes whitespace from the edges of the string, splitlines() splits the strings into lines (iterable)
-        if not line.startswith(">"): 
-            sequences.append(line.strip()) #works because my FASTA files has onlu single-line sequences
+        if line.startswith(">"): 
+            if current_seq:
+                sequences.append(current_seq)
+                current_seq=''
+        else:
+            current_seq += line.strip()
+    sequences.append(current_seq)  #append the last sequence after the loop ends
     return sequences
+
 
 #rule  gluing together pairs of reads that overlap by more than half their length.
 #we can expect sequences to look like ['ATTAGACCTG', 'CCTGCCGGAA', 'AGACCTGCCG', 'GCCGGAATAC']
