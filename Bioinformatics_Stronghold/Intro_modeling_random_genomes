@@ -1,0 +1,48 @@
+#In this problem, our first step toward understanding random occurrences of strings is to form a simple model for constructing genomes randomly. We will then apply this model to a somewhat simplified exercise: calculating the probability of a given motif occurring randomly at a fixed location in the genome.
+#A vai conter numeros de 0 a 1 representando GC content
+
+#Given: A DNA string s of length at most 100 bp and an array A containing at most 20 numbers between 0 and 1.
+
+#Return: An array B having the same length as A in which B[k] represents the common logarithm of the probability that a random string constructed with the GC-content found in A[k] will match s exactly.
+
+import math
+
+A = "0.129 0.287 0.423 0.476 0.641 0.742 0.783"
+s = "ACGATACAA"
+
+def prob_ran_is_s(A, s):
+    B = [] #list to store probs
+    for gc_cont in [float(x) for x in A.split()]: #transform string into list with floats
+        prob_c = gc_cont / 2
+        prob_g = prob_c
+        prob_a = (1 - gc_cont) / 2
+        prob_t = prob_a
+
+#first idea applying log10 on the end
+        # prob_s = 1 
+        # for nucleotide in s:
+        #     if nucleotide == 'A':
+        #         prob_s *= prob_a
+        #     elif nucleotide == 'C':
+        #         prob_s *= prob_c
+        #     elif nucleotide == 'G':
+        #         prob_s *= prob_g
+        #     elif nucleotide == 'T':
+        #         prob_s *= prob_t
+
+        # prob_s = math.log10(prob_s)
+
+#decided to go with log10 property instead 
+
+        prob_s = 0
+        for nucleotide in s:
+            if nucleotide == 'A':
+                prob_s += math.log10(prob_a)
+            elif nucleotide == 'C':
+                prob_s += math.log10(prob_c)
+            elif nucleotide == 'G':
+                prob_s += math.log10(prob_g)
+            elif nucleotide == 'T':
+                prob_s += math.log10(prob_t)
+        B.append(prob_s)
+    print(" ".join(f"{x:.3f}" for x in B))
