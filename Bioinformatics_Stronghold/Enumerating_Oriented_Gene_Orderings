@@ -1,0 +1,62 @@
+#A signed permutation of length n
+# is some ordering of the positive integers {1,2,…,n}
+# in which each integer is then provided with either a positive or negative sign (for the sake of simplicity, we omit the positive sign). For example, π=(5,−3,−2,1,4)
+# is a signed permutation of length 5
+#
+#Given: A positive integer n≤6
+#
+#Return: The total number of signed permutations of length n
+#, followed by a list of all such permutations (you may list the signed permutations in any order).
+
+
+def permutate(lst,n): #lst as the list that will hold combos
+        if len(lst) == n:
+            combo = ' '.join(str(i) for i in lst)
+            if combo not in ncombinations:
+                ncombinations.append(combo)
+            return
+        
+        for i in range(1, n+1):
+            if i not in lst:
+                permutate(lst + [i], n) #using recurrence
+
+def permutatesigns(lst, n): #lst as the list that will hold combos
+    if len(lst) == n:
+        combo = ' '.join(str(i) for i in lst)
+        if combo not in signcombinations:
+            signcombinations.append(combo)
+        
+        return signcombinations
+        
+    for i in [-1,1]:
+        permutatesigns(lst + [i], n)
+
+def sign_permutations(final=[]):
+    matched_combo= [] 
+    for comb in ncombinations: 
+    
+    # 2. Grab one sign pattern
+        for signcomb in signcombinations: 
+            clean_comb = [int(x) for x in comb.split()]
+            clean_sign = [int(x) for x in signcomb.split()]
+        # Create a temporary list for this specific matchup
+            matched_combo = matched_combo = [num * sign for num, sign in zip(clean_comb, clean_sign)]
+        
+        # 4. Save the finished product!
+            final.append(matched_combo)
+    print(len(ncombinations) * len(signcombinations))
+    for combo in final:
+        print(' '.join(str(i) for i in combo))
+
+def run_all(n_value):
+    global ncombinations, signcombinations
+    ncombinations = []
+    signcombinations = []
+    
+    permutate([], n_value)
+    permutatesigns([], n_value)
+    sign_permutations(final=[])
+
+run_all(3)
+
+#& "C:/Users/Gabriela Karam/AppData/Local/Programs/Python/Python312/python.exe" "c:/Users/Gabriela Karam/Downloads/#A signed permutation of length n.py" >"c:/Users/Gabriela Karam/Downloads/saida.txt"
