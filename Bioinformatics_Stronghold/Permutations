@@ -10,6 +10,8 @@ def permutate(lst): #lst as the list that will hold combos
         for i in range(1, n+1):
             if i not in lst:
                 permutate(lst + [i]) #using recurrence
+        
+permutate([])
 
 #using intertools
 
