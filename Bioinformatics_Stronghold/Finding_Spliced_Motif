@@ -1,0 +1,76 @@
+#A subsequence of a string is a collection of symbols contained in order (though not necessarily contiguously) in the string (e.g., ACG is a subsequence of TATGCTAAGATC). 
+#The indices of a subsequence are the positions in the string at which the symbols of the subsequence appear; 
+# thus, the indices of ACG in TATGCTAAGATC can be represented by (2, 5, 9).
+
+#As a substring can have multiple locations, a subsequence can have multiple collections of indices, 
+# and the same index can be reused in more than one appearance of the subsequence; for example, ACG is a subsequence of AACCGGTT in 8 different ways.
+
+#Given: Two DNA strings s and t
+#(each of length at most 1 kbp) in FASTA format.
+
+#Return: One collection of indices of s in which the symbols of t appear as a subsequence of s. If multiple solutions exist, you may return any one.
+
+
+with open(r'/rna_sseq.txt', 'r') as arquive:
+    fasta_string = arquive.read()
+
+def parse_fasta(fasta_string):
+    t=""
+    s=""
+    seq = 0
+    for line in fasta_string.strip().splitlines(): #strip() removes whitespace from the edges of the string, splitlines() splits the strings into lines (iterable)
+        if line.startswith(">"):
+            seq += 1
+            continue
+        else:
+            if t and seq == 2:
+                s += line
+            else:
+                t += line
+
+    return t, s
+
+def indexes(t,s):
+    idxs = {}
+    for char in s:
+        if char not in idxs.keys():
+            idxs[char]=[idx + 1 for idx, base in enumerate(t) if base == char]
+    return idxs
+
+#option 1 to get all possible answers
+def permutate(opt,s,last_idx,idxs): #opt as the list that will hold combos
+    if len(opt) == len(s):
+        if opt not in options:
+            options.append(opt)
+        return
+        
+    base = s[len(opt)] # Se opt está vazio, pega s[0] ('A')
+    for idx in idxs[base]:
+            if idx not in opt and idx > last_idx:
+                permutate(opt + [idx], s, idx,idxs) #using recurrence
+
+#option 2 to get one answer
+def permutate(opt, s, last_idx, idxs):
+    # TRAVA DE SEGURANÇA: Se já achou uma resposta, pare de procurar!
+    if len(options) > 0:
+        return
+
+    if len(opt) == len(s):
+        # Como agora só pega uma, nem precisa do "if opt not in options"
+        options.append(opt)
+        return
+        
+    base = s[len(opt)]
+    for idx in idxs[base]:
+        if idx not in opt and idx > last_idx:
+            permutate(opt + [idx], s, idx, idxs)
+
+def run_all(fasta_string):
+    global options
+    options =[]
+    
+    t, s = parse_fasta(fasta_string)
+    idxs = indexes(t,s)
+    permutate([],s,0,idxs)
+    for opt in options:
+        print(*opt)
